@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 ''' The basics of async
 '''
-from typing import Optional
 import asyncio
 import random
 
