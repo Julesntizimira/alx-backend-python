@@ -3,10 +3,10 @@
 '''
 import asyncio
 from random import uniform
-from typing import Generator
+from typing import Generator, AsyncGenerator
 
 
-async def async_generator() -> Generator[int, None, None]:
+async def async_generator() -> AsyncGenerator[float, None]:
     '''return asynchronous generator
     '''
     for _ in range(10):
