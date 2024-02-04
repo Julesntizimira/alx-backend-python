@@ -16,22 +16,26 @@ class TestGithubOrgClient(unittest.TestCase):
         inst.org
         mocked_get_json.assert_called_once_with(
             inst.ORG_URL.format(org=org_name))
-    
+
     def test_public_repos_url(self):
         '''mock a property
         '''
-        mocked_property = PropertyMock(return_value={"repos_url": "mocked property"})
+        mocked_property = PropertyMock(return_value={"repos_url":
+                                                     "mocked property"})
         with patch.object(GithubOrgClient, 'org', mocked_property):
             myclass = GithubOrgClient("args")
             self.assertEqual(myclass._public_repos_url, "mocked property")
-    
+
     @patch('client.get_json')
     def test_public_repos(self, mocked_get_json):
         '''test public_repos
         '''
-        with patch.object(GithubOrgClient, "_public_repos_url", PropertyMock()) as mocked_property:
-            mocked_property.return_value = [{"name": "jules", "licence": "43567"}]
-            mocked_get_json.return_value = [{"name": "jules", "licence": "43567"}]
+        with patch.object(GithubOrgClient,
+                          "_public_repos_url",
+                          PropertyMock()) as mocked_property:
+            mylist = [{"name": "jules", "licence": "43567"}]
+            mocked_property.return_value = mylist
+            mocked_get_json.return_value = mylist
             myclass = GithubOrgClient("args")
             self.assertEqual(myclass.public_repos(), ["jules"])
             mocked_property.assert_called_once()
