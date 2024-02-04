@@ -44,3 +44,24 @@ class TestGetJson(unittest.TestCase):
             elif input_param == 'http://holberton.io':
                 mock_object.return_value = mock_response2
             self.assertEqual(utils.get_json(input_param), expected)
+
+
+class TestMemoize(unittest.TestCase):
+    '''test memoize
+    '''
+    def test_memoize(self):
+        '''test case
+        '''
+        from utils import memoize
+
+        class TestClass:
+            def a_method(self):
+                return 42
+
+            @memoize
+            def a_property(self):
+                return self.a_method()
+        myclass = TestClass()
+        with patch.object(myclass, 'a_method', return_value=42):
+            self.assertEqual(myclass.a_property, myclass.a_property)
+            myclass.a_method.assert_called_once()
