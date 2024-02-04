@@ -30,12 +30,12 @@ class TestGithubOrgClient(unittest.TestCase):
     def test_public_repos(self, mocked_get_json):
         '''test public_repos
         '''
+        mylist = [{"name": "jules", "licence": "43567"}]
+        mocked_property = PropertyMock(return_value=mylist)
         with patch.object(GithubOrgClient,
                           "_public_repos_url",
-                          PropertyMock()) as mocked_property:
-            mylist = [{"name": "jules", "licence": "43567"}]
-            mocked_property.return_value = mylist
-            mocked_get_json.return_value = mylist
+                          mocked_property):
+            mocked_get_json.return_value = mocked_property.return_value
             myclass = GithubOrgClient("args")
             self.assertEqual(myclass.public_repos(), ["jules"])
             mocked_property.assert_called_once()
