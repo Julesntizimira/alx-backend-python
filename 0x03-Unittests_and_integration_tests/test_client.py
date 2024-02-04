@@ -2,7 +2,7 @@
 '''Parameterize a unit test
 '''
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, PropertyMock
 from parameterized import parameterized
 from client import GithubOrgClient
 
@@ -16,3 +16,11 @@ class TestGithubOrgClient(unittest.TestCase):
         inst.org
         mocked_get_json.assert_called_once_with(
             inst.ORG_URL.format(org=org_name))
+    
+    def test_public_repos_url(self):
+        '''mock a property
+        '''
+        mocked_property = PropertyMock(return_value={"repos_url": "mocked property"})
+        with patch.object(GithubOrgClient, 'org', mocked_property):
+            myclass = GithubOrgClient("args")
+            self.assertEqual(myclass._public_repos_url, "mocked property")
