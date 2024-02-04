@@ -6,6 +6,7 @@ import unittest
 from parameterized import parameterized
 
 
+
 class TestAccessNestedMap(unittest.TestCase):
     '''test utils.access_nested_map
     '''
@@ -16,3 +17,10 @@ class TestAccessNestedMap(unittest.TestCase):
         '''test case access_nested_map
         '''
         self.assertEqual(access_nested_map(input1, input2), expected)
+        
+    @parameterized.expand([({}, ("a",), "a"),({"a": 1}, ("a", "b"), "b")])
+    def test_access_nested_map_exception(self, input1, input2, expected_msg):
+        '''test exception
+        '''
+        with self.assertRaises(KeyError, msg=expected_msg):
+            access_nested_map(input1, input2)
