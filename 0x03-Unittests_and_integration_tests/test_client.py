@@ -3,8 +3,9 @@
 '''
 import unittest
 from unittest.mock import patch, Mock, PropertyMock
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
+from fixtures import TEST_PAYLOAD
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -53,3 +54,30 @@ class TestGithubOrgClient(unittest.TestCase):
         '''
         myclass = GithubOrgClient("args")
         self.assertIs(myclass.has_license(input1, input2), expected)
+
+
+@parameterized_class(('org_payload', 'repos_payload',
+                      'expected_repos', 'apache2_repos'), TEST_PAYLOAD)
+class TestIntegrationGithubOrgClient(TestCase):
+    """Integration test cases for the GithubOrgClient class."""
+
+    @classmethod
+    def setUpClass(cls):
+        """Set up the class for integration testing."""
+        def side(url):
+            """Side effect function for requests.get mock."""
+            repo = []
+            mock_response = Mock()
+            for payload in TEST_PAYLOAD:
+                if url == payload[0]["repos_url"]:
+                    repo = payload[1]
+                    break
+            mock_response.json.return_value = repo
+            return mock_response
+        cls.get_patcher = patch('requests.get', side_effect=side)
+        cls.get_patcher.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Tear down the class after integration testing."""
+        cls.get_patcher.stop()
